@@ -1,0 +1,373 @@
+import numpy as np  # linear algebra
+import pandas as pd  # read and wrangle dataframes
+import matplotlib.pyplot as plt # visualization
+import seaborn as sns # statistical visualizations and aesthetics
+
+
+df = pd.read_csv('https://raw.githubusercontent.com/dsrscientist/Data-Science-ML-Capstone-Projects/master/baseball.csv')
+
+df.head()
+
+
+df.head(25)
+
+The shape of the data frame.
+
+
+
+df.shape
+
+
+#checking the unique values of totalcharge
+df.['total charges'],unique()
+
+# checking for null value
+
+
+
+sns.heatmap(df.isnull().sum().to_frame())
+
+
+
+ Basic information about dataset
+
+df.info()
+
+# Column Non-Null Count Dtype
+
+
+
+# — — — — — — — — — — — — — — -
+
+0 W 30 non-null int64
+
+1 R 30 non-null int64
+
+2 AB 30 non-null int64
+
+3 H 30 non-null int64
+
+4 2B 30 non-null int64
+
+5 3B 30 non-null int64
+
+6 HR 30 non-null int64
+
+7 BB 30 non-null int64
+
+8 SO 30 non-null int64
+
+9 SB 30 non-null int64
+
+10 RA 30 non-null int64
+
+11 ER 30 non-null int64
+
+12 ERA 30 non-null float64
+
+13 CG 30 non-null int64
+
+14 SHO 30 non-null int64
+
+15 SV 30 non-null int64
+
+16 E 30 non-null int64
+
+No need to change the datatype they are appropriate so we can skip the step of data conversion Now directly jumps to Visualization
+
+
+
+# Visualization
+
+Now, let’s visualize the distribution of continuous features
+
+
+
+plt.show()
+plt.figure(figsize=(20,5))
+plt.subplot(1,3,1)
+sns.histplot(x=i,data=df,kde=True)
+plt.subplot(1,3,2)
+sns.regplot(x=i,y='w',data=df)
+plt.subplot(1,3,3)
+sns.boxplot(y=i,data=df)
+plt.show()
+
+
+
+
+# Run and win are linearly correlated. And outliers are present between 850 and 900
+
+
+
+# At balls is very weekly related to Wins With no outliers.
+
+# Hits are also very weekly related to winning with no outliers
+
+# Doubles are linearly related with Wins, with no outlier, and data is left-skewed
+
+# Triple has very weak negative correlations with win with no outlier and data is right-skewed
+
+
+
+# The home run has a very low correlation with wins with no lot of outliers and data is right-skewed
+
+
+
+Errors are not correlated to win, the data has outliers and data is right-skewed.
+
+Now when numerical data are analyzed it’s time for some stories.
+
+Storytelling:
+
+The number of runs, home runs, doubles, Saves, Shutouts, and Walks are highly positively linearly correlated.
+
+Stolen Bases, Runs Allowed, Earned Runs are highly negative linearly correlated.
+
+The remaining features have less to no linear correlation with no of Wins
+
+The dataset set has too much randomness. And only has sets of data (too little to form a suitable Decision tree)
+
+Pre-Processing Pipeline.
+
+As all the data in the set have continuous value the preprocessing steps consist of data transformation (standardization) and scaling (normalization).
+
+Standardization is a method to convert the data set into a normal distribution. There are many methods to do it.
+
+Log-transformation — if the data set is highly rightly skewed then it is best to use Log-transformation
+Square root transformation — if data is a little bit right-skewed then it is best to use square root transform
+Cube root transformation
+Reciprocal transformation
+Box-cox transformation
+Power transformation
+And much more mathematical transformation is there to standardize the data.
+
+Normalization is a mathematical technic that scales the data into some range it is required for some machine learning algorithms such as Linear regression, KNN, etc.
+
+Normalization minimizes the difference between the low valve and high value which helps in better prediction. Some Normalization methods are mentioned below
+
+Min-Max-Scaler- it converter the dataset into the range of 0 to 1
+
+2. Mean Normalization- it converts the data set into the range of -1 ti 1 and the mean is 0.
+
+
+3. Standard scaling(z-score)- its converts data set as mean=0, standard deviation as 1.
+
+
+Outliers It can be defined as the odd one out means the data in the dataset having some odd values. It can be too low or too high. There are two main methods to remove outliers:
+
+Z-score method- it covert the dataset into z-sore and then check if absolute of z_score is greater than 3 then remove those data. In a standard normal distribution, 99.73% of data should lie within 3 standard deviations i.e 3(the standard, deviation is 1).
+
+
+z=np.abs(stat.zscore(df_z[num]))
+a=int(df_z.size)
+df_z = df_z[(z>3).all(axis=1)]
+
+
+2. IQR method- IQR stands for the interquartile reason it uses percentile for outlier detection 50 percentile represents the median, 25 percentile represents the Q1, 75 percentile represents Q2.
+
+Upper IQR=1.5*(Q2-Q1)+Q2
+
+Lower IQR=Q1–1.5*(Q2-Q1)
+
+Remove any data outside upper IQR and lower IQR
+
+
+
+Q1 = np.percentile(df_boston[‘DIS’], 25,
+interpolation = ‘midpoint’)
+Q3 = np.percentile(df_boston[‘DIS’], 75,
+interpolation = ‘midpoint’)
+IQR = Q3 — Q1
+print(“Old Shape: “, df_boston.shape)
+# Upper bound
+upper = np.where(df_boston[‘DIS’] >= (Q3+1.5*IQR))
+# Lower bound
+lower = np.where(df_boston[‘DIS’] <= (Q1–1.5*IQR))
+‘’’ Removing the Outliers ‘’’
+df_boston.drop(upper[0], inplace = True)
+df_boston.drop(lower[0], inplace = True)
+
+
+# Data Reduction — This dataset has continuous independent value and dependent value. There are many technics for Data reduction
+
+Pearson r correlation: Pearson r correlation is the most widely used correlation statistic to measure the degree of the relationship between linearly related variables.
+
+
+sns.heatmap(pt1.corr(),annot=True,cmap=’PiYG’)
+
+# 2. ANOVA: Analysis of variance (ANOVA) is an analysis tool used in statistics that splits an observed aggregate variability found inside a data set into two parts: systematic factors and random factors. The systematic factors have a statistical influence on the given data set, while the random factors do not. Analysts use the ANOVA test to determine the influence that independent variables have on the dependent variable in a regression study.
+
+
+
+from sklearn.feature_selection import SelectKBest
+from sklearn.feature_selection import f_classif
+s = SelectKBest(f_classif, k=15)
+s.fit(x,y)
+anova=pd.DataFrame([s.scores_,s.pvalues_],columns=x.columns).T.sort_values(by=0)
+
+
+# 3. R-squared (R2): It is a statistical measure that represents the proportion of the variance for a dependent variable that is explained by an independent variable. R-squared explains to what extent the variance of the dependent variable explains the variance of the dependent variable. So, if the R2 of a model is 0.50, then approximately half of the observed variation can be explained by the model’s inputs.
+
+
+
+cv_results = cross_validate(lr(normalize=True), x, y, cv=3,scoring=’r2')
+lr_reg=cv_results[‘test_score’].mean()
+r2=[]
+r2.append(lr_reg)
+j=1
+k=1
+least_r21=-10
+while j==1:
+for i in x.columns:
+demo_x=x.drop(i,axis=1)
+cv_results = cross_validate(lr(normalize=True), demo_x, y, cv=3,scoring=’r2')
+lr_reg1=cv_results[‘test_score’].mean()
+if lr_reg1>lr_reg:
+least=i
+least_r2=lr_reg1
+lr_reg=lr_reg1
+if least_r21<least_r2:
+print(str(least) + ‘is having r2 score of’ + str(least_r2))
+least_r21=least_r2
+x.drop(least,axis=1,inplace=True)
+r2.append(lr_reg)
+k=k+1
+else:
+j=0
+plt.scatter(range(k),r2)
+
+
+# In the above graph, it is clear that removing some variable R-square increases significantly which means randomness in the dataset has decreased
+
+Pre-Processing pipeline is a step-by-step process of pre-processing required for a dataset for making it more understandable and recognizable by the computer to perform machine learning.
+
+The whole step-by-step process is packed in a set that can be created in function, class, or using pipeline from sklearn library.
+
+preprocessing helps in reducing the noise or randomness from data. It consists of the following elements
+
+Data Cleaning:- removing the Null value
+Data Integration:- integrates data from a multitude of sources into a single data warehouse.
+Data Transformation:- Transforming data such as standardization, normalization, encoding, etc
+Data Reduction:- removing redundant data.
+
+
+Data Integration:- integrates data from a multitude of sources into a single data warehouse.
+Data Transformation:- Transforming data such as standardization, normalization, encoding, etc
+Data Reduction:- removing redundant data.
+
+
+def pipeline_viz(df):
+num,cat=num_cat(df)
+num_plot(df,num)
+df[num]=pow_tran(df,num)
+df[num]=stan_sc(df,num)
+df[num]=z_outlier(df,num)
+df_new=dimention_reduction(df,num)
+return (df_new)
+
+
+# Enable function step by step prepossessing functions are called to make a pipeline first function segregates numerical and categorical data, the second function plots the numerical data for the analysis, The third function standardizes the numerical data, the Forth function normalizes the numerical data, the fifth function to remove the outlier from the numerical data set and the last function is used for dimension reduction This function is the pipeline for preprocessing and visualization.
+
+
+
+def num_cat(df):
+num=[]
+cat=[]
+count=df.nunique()
+for i in df.columns:
+if count[i]>5:
+num.append(i)
+else:
+cat.append(i)
+return(num,cat)
+from sklearn.preprocessing import power_transform as PT
+def pow_tran(df,num):
+pt=pd.DataFrame()
+for i in num:
+if df[i].min()<=0:
+pt1=(df[i]-df[i].min()+0.0001)
+else:
+pt1=df[i]
+pt=pd.concat([pt,pd.DataFrame(pt1)],axis=1)
+pt1=PT(pt)
+pt1=pd.DataFrame(pt1,columns=num)
+return(pt1)
+def num_plot(df,num):
+for i in num:
+plt.figure(figsize=(20,5))
+plt.subplot(1,3,1)
+sns.histplot(x=i,data=df,kde=True,hue=’Churn’)
+plt.subplot(1,3,2)
+sns.regplot(x=i,y=’W’data=df,kde=True,hue=’Churn’)
+plt.subplot(1,3,3)
+sns.boxplot(y=i,data=df)
+plt.show()
+def z_outlier(df,num):
+df_z=df[num]
+z=np.abs(stat.zscore(df_z))
+a=int(df_z.size)
+df_z = df_z[(z>3).all(axis=1)]
+print(‘Percent of data retained = ‘+ str(int(df_z.size)/a))
+return(df_z)
+def stan_sc(df,num):
+ss=StandardScaler()
+x=df[num].to_numpy()
+x1=pd.DataFrame(ss.fit_transform(x),columns=num)
+return(x1)
+
+
+Machine learning is as good as preprocessing. Now let’s take a look into some algorithms of machine learning for classification.
+
+Linear regression — it is an algorithm that minimizes the loss function i.e summation of square error.
+Decision Tree — It is a tree-based algorithm that uses the gini or entropy method to generate the tree.
+Random forest- It is a multiple trees algorithm that uses bootstrap sampling and bagging for classification.
+Extreme Gradient boosting — it is a boosting algorithm that uses a multi-decision tree.
+Support vector machine- it constructs Hyperplane and marginal plane and distance between them is optimized.
+There are multiple machine learning algorithms to select from. Based on the quite best method to select the algorithm having the minimum difference between predicted score and cross-validation score.
+
+
+
+def clf(model,x,y,x_test,y_test):
+lr = model.fit(x, y)
+y_pred=lr.predict(x_test)
+print(confusion_matrix(y_test,y_pred))
+print(accuracy_score(y_test,y_pred))
+print(classification_report(y_test,y_pred))
+lr_acc=f1_score(y_test,y_pred)
+cv_results = cross_validate(model, x, y, cv=10)
+lr_score=cv_results[‘test_score’].mean()
+return(lr_acc,lr_score)
+lr_acc,lr_score=clf(LinearRegression(),x_train_scaler,y_train,x_test_scaler,y_test)
+rfc_acc,rfc_score=clf(RFR(),x_train_scaler,y_train,x_test_scaler,y_test)
+xgc_acc,xgc_score=clf(XBR(),x_train_scaler,y_train,x_test_scaler,y_test)
+etc_acc,etc_score=clf(ETR(),x_train_scaler,y_train,x_test_scaler,y_test)
+svc_acc,svc_score=clf(SVC(),x_train_scaler,y_train,x_test_scaler,y_test)
+score=[lr_score,rfc_score,xgc_score,etc_score,svc_score]
+error=[lr_acc,rfc_acc,xgc_acc,etc_acc,svc_acc]
+name=[‘LR’,’RFR’,’XGR’,’ETR’,’SVR’]
+diff=[]
+for i in range(5):
+diff.append(score[i]-error[i])
+pd.DataFrame([name,score,error,diff]).T
+
+
+Now after selecting the best algorithm now we should do Hyperparameter tuning for extreme gradient boosting.
+
+Random search cv:- It randomly Search the grid for the best scoring. Processing time is less but the accuracy is not that great
+Grid search cv:- it searches the grid one by one for the best scoring. Processing time is more but the accuracy is great
+
+
+from sklearn.model_selection import GridSearchCV
+ridge_params = {‘alpha’:[1,2,3,4,5,6,7,8,9,10]}
+xg_grid = GridSearchCV(Ridge(), ridge_params, cv=3)
+xg_grid.fit(x_train_scaler, y_train)
+print(‘Best score:’, xg_grid.best_score_)
+print(‘Best score:’, xg_grid.best_params_)
+print(‘Best score:’, xg_grid.best_estimator_)
+
+
+
+
+
+
